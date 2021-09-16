@@ -6,6 +6,7 @@ import { ImageGallery } from './components/ImageGallery/ImageGallery';
 import { Modal } from 'components/Modal/Modal';
 import { ButtonMore } from './components/ButtonMore/ButtonMore';
 import { Loader } from 'components/Loader/Loader';
+import { setScrollTo } from './utils/setScrollTo';
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -31,6 +32,7 @@ const App = () => {
       const receivedImages = await getImages({ page, query });
       if (page === 1) {
         setImages(receivedImages);
+        setScrollTo(-document.documentElement.scrollHeight);
       } else {
         setImages(prev => [...prev, ...receivedImages]);
       }
@@ -42,15 +44,6 @@ const App = () => {
   useEffect(() => {
     setQuantityImages(images.length);
   }, [images]);
-
-  // useEffect(() => {
-  //   if (status === 'resolved') {
-  //     window.scrollTo({
-  //       top: -2000,
-  //       behavior: 'smooth',
-  //     });
-  //   }
-  // }, [query.length]);
 
   const handleQuery = value => {
     const query = value

@@ -9,6 +9,7 @@ const ImageGalleryItem = ({ url, tags, onClick, largeImage }) => {
         src={url}
         alt={tags}
         onClick={() => onClick(largeImage)}
+        loading={'lazy'}
       />
     </li>
   );

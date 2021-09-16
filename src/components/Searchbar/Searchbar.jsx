@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { DebounceInput } from 'react-debounce-input';
 import { FaSearch } from 'react-icons/fa';
@@ -8,45 +8,42 @@ import PropTypes from 'prop-types';
 
 const headerRoot = document.querySelector('#header-root');
 
-class Searchbar extends Component {
-  static propTypes = {
-    handleQuery: PropTypes.func.isRequired,
+const Searchbar = ({ handleQuery }) => {
+  const [value, setValue] = useState('');
+
+  const onChange = e => {
+    const inputValue = e.target.value;
+    setValue(inputValue);
+    handleQuery(inputValue);
   };
 
-  state = {
-    value: null,
-  };
+  const inputId = uuidv4();
 
-  onChange = e => {
-    const value = e.target.value;
-    this.setState({ value });
-    this.props.handleQuery(value);
-  };
+  return createPortal(
+    <header className={s.header}>
+      <div className={s.inputWrapper}>
+        <label htmlFor={inputId} className={s.label}>
+          <FaSearch className={s.icon} />
+          <DebounceInput
+            className={s.input}
+            debounceTimeout={750}
+            id={inputId}
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            value={value}
+            onChange={onChange}
+          />
+        </label>
+      </div>
+    </header>,
+    headerRoot,
+  );
+};
 
-  render() {
-    const inputId = uuidv4();
-    return createPortal(
-      <header className={s.header}>
-        <div className={s.inputWrapper}>
-          <label htmlFor={inputId} className={s.label}>
-            <FaSearch className={s.icon} />
-            <DebounceInput
-              className={s.input}
-              debounceTimeout={750}
-              id={inputId}
-              type="text"
-              autoComplete="off"
-              autoFocus
-              placeholder="Search images and photos"
-              value={this.state.value}
-              onChange={this.onChange}
-            />
-          </label>
-        </div>
-      </header>,
-      headerRoot,
-    );
-  }
-}
+Searchbar.propTypes = {
+  handleQuery: PropTypes.func.isRequired,
+};
 
 export { Searchbar };
